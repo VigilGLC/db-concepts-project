@@ -15,7 +15,6 @@ public class NucleicAcidTestRequest {
     private int id; // patient id
 
     private LocalDate date;
-    private double temperature;
     private String symptom;
     private String state;
 

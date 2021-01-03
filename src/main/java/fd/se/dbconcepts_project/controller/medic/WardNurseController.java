@@ -5,6 +5,8 @@ import fd.se.dbconcepts_project.pojo.request.wardnurse.RegistrationReportRequest
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 import static fd.se.dbconcepts_project.entity.consts.Profession.WARD_NURSE;
 import static fd.se.dbconcepts_project.entity.consts.Role.USER;
 
@@ -28,6 +30,13 @@ public class WardNurseController {
     @PostMapping("/patient/register")
     public ResponseEntity<?> reportRegistration(
             @RequestBody RegistrationReportRequest request) {
+        return ResponseEntity.ok().build();
+    }
+
+    @Authorize(role = USER, professions = {WARD_NURSE})
+    @GetMapping("/patient/test")
+    public ResponseEntity<?> checkNucleicAcidTest(@RequestParam int id,
+                                                  @RequestParam LocalDateTime time) {
         return ResponseEntity.ok().build();
     }
 

@@ -18,7 +18,6 @@ public class PatientEnrollRequest {
     @Data
     public static class TestInfo {
         public LocalDate date;
-        public double temperature;
         public String symptom;
         public String state;
     }

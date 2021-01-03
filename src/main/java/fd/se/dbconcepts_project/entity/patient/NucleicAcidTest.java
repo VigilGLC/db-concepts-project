@@ -15,7 +15,6 @@ public class NucleicAcidTest {
     private Integer id;
 
     private LocalDate date;
-    private double temperature;
     private String symptom;
     private State state;
 
