@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.HashMap;
 
+import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+
 public enum Gender {
     FEMALE("female"),
     MALE("male");
@@ -24,7 +26,7 @@ public enum Gender {
         }
     }
 
-    @JsonCreator
+    @JsonCreator(mode = DELEGATING)
     public static Gender of(String value) {
         return valueMap.getOrDefault(value, null);
     }

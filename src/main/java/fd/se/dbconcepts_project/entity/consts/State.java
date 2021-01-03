@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.HashMap;
 
+import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+
 public enum State {
     CURED("cured"),
     TREATED("treated"),
@@ -25,7 +27,7 @@ public enum State {
         }
     }
 
-    @JsonCreator
+    @JsonCreator(mode = DELEGATING)
     public static State of(String value) {
         return valueMap.getOrDefault(value, null);
     }

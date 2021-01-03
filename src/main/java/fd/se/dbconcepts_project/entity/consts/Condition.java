@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import java.util.HashMap;
 
+import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+
 public enum Condition {
     MILD("mild"),
     SEVERE("severe"),
@@ -25,7 +27,7 @@ public enum Condition {
         }
     }
 
-    @JsonCreator
+    @JsonCreator(mode = DELEGATING)
     public static Condition of(String value) {
         return valueMap.getOrDefault(value, null);
     }
