@@ -7,8 +7,9 @@ import fd.se.dbconcepts_project.repository.UserRepository;
 import fd.se.dbconcepts_project.utils.EncryptUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @AllArgsConstructor
@@ -22,10 +23,12 @@ public class DataBaseConfig {
     private static final String ADMIN = "admin";
     private static final String PASSWORD = "password";
 
-    @Bean
-    public void initDatabase() {
+    @PostConstruct
+    public void init() {
+        final User admin;
         if (!checkAdminExist()) {
-            createAdmin();
+            admin = createAdmin();
+            log.info("Admin {} Created.", admin.getUsername());
         }
     }
 
@@ -33,13 +36,13 @@ public class DataBaseConfig {
         return null != userRepository.findByUsername(ADMIN);
     }
 
-    private void createAdmin() {
+    private User createAdmin() {
         final User admin = new User();
         admin.setUsername(ADMIN);
         admin.setName(ADMIN);
         admin.setPassword(encryptUtils.encrypt(PASSWORD));
         admin.setRole(Role.ADMIN);
-        userRepository.save(admin);
+        return userRepository.save(admin);
     }
 
 }
