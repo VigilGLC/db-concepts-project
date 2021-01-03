@@ -6,6 +6,7 @@ import fd.se.dbconcepts_project.entity.medic.MedicBase;
 import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.interceptor.Subject;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
     private final Subject subject;
@@ -34,18 +36,24 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         Authorize annotation;
         if ((annotation = method.getAnnotation(Authorize.class)) != null ||
                 (annotation = handlerMethod.getBeanType().getAnnotation(Authorize.class)) != null) {
+            boolean authorized = true;
             final Role role = annotation.role();
             final List<Profession> professions = Arrays.stream(annotation.professions()).
                     collect(Collectors.toList());
 
             final User currUser = subject.getUser();
             if (role != Role.ANY && currUser.getRole() != role) {
-                return false;
+                authorized = false;
             }
 
             if (professions.size() != 0) {
                 final MedicBase currMedic = currUser.getMedic();
-                return currMedic != null && professions.contains(currMedic.getProfession());
+                authorized = currMedic != null && professions.contains(currMedic.getProfession());
+            }
+            if (!authorized) {
+                log.warn("User {} authority Intercepted.", currUser.getUsername());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return false;
             }
         }
         return true;
