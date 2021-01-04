@@ -1,7 +1,6 @@
 package fd.se.dbconcepts_project.controller;
 
 import fd.se.dbconcepts_project.entity.usr.User;
-import fd.se.dbconcepts_project.interceptor.authorize.Authorize;
 import fd.se.dbconcepts_project.pojo.request.account.SignInRequest;
 import fd.se.dbconcepts_project.pojo.request.account.SignUpRequest;
 import fd.se.dbconcepts_project.pojo.response.TokenResponse;
@@ -29,10 +28,11 @@ public class AccountController {
     @Transactional
     @PostMapping(value = "/signUp")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequest request) {
+        final User user;
         if (userService.checkUnique(request.getUsername()) &&
-                userService.createUser(request) != null) {
+                (user = userService.createUser(request)) != null) {
             log.info("User {} created.", request.getUsername());
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(user);
         }
         log.warn("User {} already exists.", request.getUsername());
         return ResponseEntity.badRequest().build();
