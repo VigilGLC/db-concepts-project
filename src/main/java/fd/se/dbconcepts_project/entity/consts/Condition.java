@@ -6,11 +6,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+import static fd.se.dbconcepts_project.entity.consts.Constants.*;
 
 public enum Condition {
-    MILD("mild"),
-    SEVERE("severe"),
-    CRITICAL("critical");
+    MILD(STRING_MILD),
+    SEVERE(STRING_SEVERE),
+    CRITICAL(STRING_CRITICAL);
 
     public final String value;
 

@@ -2,11 +2,13 @@ package fd.se.dbconcepts_project.entity.consts;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import static fd.se.dbconcepts_project.entity.consts.Constants.*;
+
 public enum Role {
 
-    ANY("null"),
-    USER("user"),
-    ADMIN("admin");
+    ANY(STRING_ANY),
+    USER(STRING_USER),
+    ADMIN(STRING_ADMIN);
 
     public final String value;
 

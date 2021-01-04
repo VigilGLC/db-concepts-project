@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+import static fd.se.dbconcepts_project.entity.consts.Constants.*;
+import static fd.se.dbconcepts_project.entity.consts.Constants.STRING_MALE;
 
 public enum Gender {
-    FEMALE("female"),
-    MALE("male");
+    FEMALE(STRING_FEMALE),
+    MALE(STRING_MALE);
 
     public final String value;
 

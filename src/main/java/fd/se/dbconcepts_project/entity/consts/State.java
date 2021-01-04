@@ -6,11 +6,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+import static fd.se.dbconcepts_project.entity.consts.Constants.*;
 
 public enum State {
-    CURED("cured"),
-    TREATED("treated"),
-    DIED("died");
+    CURED(STRING_CURED),
+    TREATED(STRING_TREATED),
+    DIED(STRING_DIED);
 
     public final String value;
 

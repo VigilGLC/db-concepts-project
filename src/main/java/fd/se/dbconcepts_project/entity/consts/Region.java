@@ -6,16 +6,23 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+import static fd.se.dbconcepts_project.entity.consts.Constants.*;
 
 public enum Region {
-    MILD("mild"),
-    SEVERE("severe"),
-    CRITICAL("critical");
+    MILD(STRING_MILD, MILD_PATIENTS_MAX, MILD_WARDBEDS_MAX),
+    SEVERE(STRING_SEVERE, SEVERE_PATIENTS_MAX, SEVERE_WARDBEDS_MAX),
+    CRITICAL(STRING_CRITICAL, CRITICAL_PATIENTS_MAX, CRITICAL_WARDBEDS_MAX);
 
     public final String value;
 
-    Region(String value) {
+    public final int patientsMax;
+    public final int wardBedsMax;
+
+
+    Region(String value, int patientsMax, int wardBedsMax) {
         this.value = value;
+        this.patientsMax = patientsMax;
+        this.wardBedsMax = wardBedsMax;
     }
 
 

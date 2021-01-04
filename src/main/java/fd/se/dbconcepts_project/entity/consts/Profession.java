@@ -6,14 +6,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.HashMap;
 
 import static com.fasterxml.jackson.annotation.JsonCreator.Mode.DELEGATING;
+import static fd.se.dbconcepts_project.entity.consts.Constants.*;
 
 public enum Profession {
 
-
-    DOCTOR("doctor"),
-    HEAD_NURSE("headnurse"),
-    WARD_NURSE("wardnurse"),
-    EMERGENCY_NURSE("emergencynurse");
+    DOCTOR(STRING_DOCTOR),
+    HEAD_NURSE(STRING_HEAD_NURSE),
+    WARD_NURSE(STRING_WARD_NURSE),
+    EMERGENCY_NURSE(STRING_EMERGENCY_NURSE);
 
 
     public final String value;
