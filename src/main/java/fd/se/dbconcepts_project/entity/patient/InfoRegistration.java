@@ -1,11 +1,13 @@
 package fd.se.dbconcepts_project.entity.patient;
 
 import fd.se.dbconcepts_project.entity.consts.Condition;
+import fd.se.dbconcepts_project.entity.consts.Result;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import fd.se.dbconcepts_project.entity.patient.listener.InfoRegistrationAuditListener;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,9 +19,9 @@ public class InfoRegistration {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private LocalDateTime time;
-    private String result;
+    private LocalDate date;
     private Condition condition;
+    private Result result;
 
     @ManyToOne
     private Patient patient;

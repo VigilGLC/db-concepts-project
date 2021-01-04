@@ -31,4 +31,7 @@ public class Constants {
     public static final int SEVERE_WARDBEDS_MAX = 2;
     public static final int CRITICAL_WARDBEDS_MAX = 1;
 
+    public static final String STRING_POSITIVE = "+";
+    public static final String STRING_NEGATIVE = "-";
+
 }
