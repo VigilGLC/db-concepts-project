@@ -35,6 +35,9 @@ public class WardService {
     public Ward addWardBed(int wardId) {
         final WardBed wardBed = new WardBed();
         final Ward ward = wardRepository.findById(wardId);
+        if (ward.getWardBeds().size() >= ward.getRegion().wardBedsMax) {
+            return null;
+        }
         ward.getWardBeds().add(wardBed);
         return wardRepository.save(ward);
     }

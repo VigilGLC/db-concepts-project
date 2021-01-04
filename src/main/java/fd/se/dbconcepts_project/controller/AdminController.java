@@ -66,6 +66,10 @@ public class AdminController {
     @PostMapping("/ward/wardbed/build")
     public ResponseEntity<?> buildWardBed(@RequestBody MereIdRequest request) {
         final Ward ward = wardService.addWardBed(request.getId());
+        if (ward == null) {
+            log.warn("Target Ward {} is full, build Fail.", request.getId());
+            return ResponseEntity.badRequest().build();
+        }
         log.info("Admin add WardBed in Ward {}.", ward.getId());
         return ResponseEntity.ok().build();
     }
