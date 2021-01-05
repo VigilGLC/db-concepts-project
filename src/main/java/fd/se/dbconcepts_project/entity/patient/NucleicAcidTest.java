@@ -1,5 +1,6 @@
 package fd.se.dbconcepts_project.entity.patient;
 
+import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.entity.consts.Result;
 import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.medic.Doctor;
@@ -16,10 +17,8 @@ public class NucleicAcidTest {
     private Integer id;
 
     private LocalDate date;
-    private String symptom;
-    private State state;
-
     private Result result;
+    private Condition condition;
 
     @ManyToOne
     private Patient patient;

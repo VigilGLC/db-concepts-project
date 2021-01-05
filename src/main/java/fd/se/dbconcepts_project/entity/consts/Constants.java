@@ -34,4 +34,8 @@ public class Constants {
     public static final String STRING_POSITIVE = "+";
     public static final String STRING_NEGATIVE = "-";
 
+    public static final int TEST_CHECK_LIMIT = 2;
+    public static final int REGISTER_CHECK_LIMIT = 3;
+    public static final double TEMPERATURE_BORDER = 37.3;
+
 }

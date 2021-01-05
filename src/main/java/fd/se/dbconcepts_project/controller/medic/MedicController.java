@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 import static fd.se.dbconcepts_project.entity.consts.Profession.*;
 import static fd.se.dbconcepts_project.entity.consts.Role.USER;
@@ -85,19 +84,28 @@ public class MedicController {
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE, EMERGENCY_NURSE, WARD_NURSE})
     @GetMapping("/patient")
     public ResponseEntity<?> getPatient(@RequestParam int id) {
-        return ResponseEntity.ok().build();
+        final Patient patient = patientService.getPatientById(id);
+        return ResponseEntity.ok(patient);
     }
 
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE})
     @GetMapping("/patients/canDischarge")
     public ResponseEntity<?> getAllPatientsCanDisCharge() {
-        return ResponseEntity.ok().build();
+        final User currUser = subject.getUser();
+        final List<Patient> patients =
+                patientService.getPatientsCanDischarge(
+                        currUser.getMedic().getRegion());
+        return ResponseEntity.ok(patients);
     }
 
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE})
     @GetMapping("/patients/canTransfer")
     public ResponseEntity<?> getAllPatientsCanTransfer() {
-        return ResponseEntity.ok().build();
+        final User currUser = subject.getUser();
+        final List<Patient> patients =
+                patientService.getPatientsRegionNotMatchCondition(
+                        currUser.getMedic().getRegion());
+        return ResponseEntity.ok(patients);
     }
 
 

@@ -1,14 +1,13 @@
 package fd.se.dbconcepts_project.entity.patient;
 
-import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.entity.consts.Result;
+import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import fd.se.dbconcepts_project.entity.patient.listener.InfoRegistrationAuditListener;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -20,14 +19,16 @@ public class InfoRegistration {
     private Integer id;
 
     private LocalDate date;
-    private Condition condition;
+    private double temperature;
+    private String symptom;
+    private State state;
     private Result result;
 
     @ManyToOne
     private Patient patient;
-    @OneToOne
-    private NucleicAcidTest nucleicAcidTest;
     @ManyToOne
     private WardNurse wardNurse;
+    @OneToOne
+    private NucleicAcidTest nucleicAcidTest;
 
 }

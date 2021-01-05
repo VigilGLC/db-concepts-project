@@ -15,7 +15,7 @@ public class Ward {
 
     private Region region;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ward")
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<WardBed> wardBeds;
 
 
