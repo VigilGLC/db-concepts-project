@@ -89,6 +89,8 @@ public class PatientService {
     public WardBed arrangePatient(Patient patient) {
         Region old = patient.getRegion();
         Region expected = Region.of(patient.getCondition().value);
+        if (old == expected) return patient.getWardBed();
+
         final List<Ward> wards =
                 wardRepository.findAvailableWardByRegion(expected);
         final List<WardNurse> wardNurses = wardNurseRepository.
@@ -108,20 +110,22 @@ public class PatientService {
         if (hasEmptyBed) {
             log.info("Patient {} transferred to Region {}", patient.getId(), expected);
         }
-
         patient.setRegion(expected);
         patient.setWardNurse(wardNurse);
         patient.setWardBed(wardBed);
         patient = patientRepository.save(patient);
+        if (hasEmptyBed) {
+            rearrangePatients(old);
+        }
+
         messageService.createMessage(
                 MessageType.TRANSFERRED_NOTIFY,
                 userService.getUserByRegionAndProfession(expected,
                         Profession.HEAD_NURSE).getMedic(),
                 patient,
                 expected);
-        if (hasEmptyBed) {
-            rearrangePatients(old);
-        }
+
+
         return wardBed;
     }
 
@@ -149,6 +153,7 @@ public class PatientService {
 
     private boolean unbindPatient(Patient patient) {
         if (patient.getRegion() == null) return false;
+        patient.setRegion(null);
         patient.setWardNurse(null);
         patient.setWardBed(null);
         patientRepository.save(patient);
@@ -171,7 +176,7 @@ public class PatientService {
             final Region oldRegion = patient.getRegion();
             unbindPatient(patient);
             rearrangePatients(oldRegion);
-        }else if (state == TREATED && condition != null) {
+        } else if (state == TREATED && condition != null) {
             if (arrangePatient(patient) != null) {
                 log.info("Patient {} new Condition {}, Success to according Region",
                         patient.getId(), condition);
