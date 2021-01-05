@@ -76,8 +76,8 @@ public class MedicController {
     public ResponseEntity<?> getPatients(@RequestParam State state) {
         final User currUser = subject.getUser();
         final List<Patient> statedPatients = patientService.
-                getAllPatientsByState(currUser.getMedic().getRegion(), state);
-        log.info("User {} get wardnurse's patients.", currUser.getUsername());
+                getAllPatientsByState(currUser.getMedic().getRegion(), null, state);
+        log.info("User {} get all patients.", currUser.getUsername());
         return ResponseEntity.ok(new PatientsResponse(statedPatients));
     }
 
