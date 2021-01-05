@@ -15,5 +15,6 @@ public interface WardNurseRepository extends CrudRepository<WardNurse, Integer> 
             "where wardnurse.region =:region and  wardnurse.patients.size < :patientsMax")
     List<WardNurse> findAvailableWardNursesByRegion(Region region, int patientsMax);
 
+    WardNurse finByRegion(Region region);
 
 }

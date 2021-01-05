@@ -20,5 +20,6 @@ public interface UserRepository extends CrudRepository<User, Integer> {
 
     List<User> findUserByMedicProfessionAndMedicRegion(Profession profession, Region region);
 
+    User findByMedicRegionAndMedicProfession(Region region, Profession profession);
 
 }

@@ -1,9 +1,7 @@
 package fd.se.dbconcepts_project.service;
 
 
-import fd.se.dbconcepts_project.entity.consts.Condition;
-import fd.se.dbconcepts_project.entity.consts.Region;
-import fd.se.dbconcepts_project.entity.consts.State;
+import fd.se.dbconcepts_project.entity.consts.*;
 import fd.se.dbconcepts_project.entity.hospital.Ward;
 import fd.se.dbconcepts_project.entity.hospital.WardBed;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
@@ -14,6 +12,7 @@ import fd.se.dbconcepts_project.repository.PatientRepository;
 import fd.se.dbconcepts_project.repository.WardNurseRepository;
 import fd.se.dbconcepts_project.repository.WardRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +28,15 @@ import static fd.se.dbconcepts_project.entity.consts.State.TREATED;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PatientService {
 
     private final PatientRepository patientRepository;
     private final WardNurseRepository wardNurseRepository;
     private final WardRepository wardRepository;
+
+    private final MessageService messageService;
+    private final UserService userService;
 
     public List<Patient> getWardNursePatients(int id) {
         return patientRepository.findByWardNurseId(id);
@@ -99,12 +102,43 @@ public class PatientService {
                 filter(wardbed -> wardbed.getPatient() == null).findFirst();
         if (!wardBedOptional.isPresent()) return null;
         WardBed wardBed = wardBedOptional.get();
+
+        if (unbindPatient(patient)) {
+            log.info("Patient {} transferred to Region {}", patient.getId(), expected);
+        }
+
         patient.setRegion(expected);
         patient.setWardNurse(wardNurse);
+        patient.setWardBed(wardBed);
         patient = patientRepository.save(patient);
-        wardBed.setPatient(patient);
-        wardRepository.save(ward);
+        messageService.createMessage(
+                MessageType.TRANSFERRED_NOTIFY,
+                userService.getUserByRegionAndProfession(expected,
+                        Profession.HEAD_NURSE).getMedic(),
+                patient,
+                expected);
         return wardBed;
+    }
+
+    private boolean unbindPatient(Patient patient) {
+        if (patient.getRegion() == null) return false;
+        patient.setWardNurse(null);
+        patient.setWardBed(null);
+        patientRepository.save(patient);
+        return true;
+    }
+
+    @Transactional
+    public Patient changePatientInfo(int id, Condition condition, State state) {
+        Patient patient = getPatientById(id);
+        if (condition != null) {
+            patient.setCondition(condition);
+        }
+        if (state != null) {
+            patient.setState(state);
+        }
+        patient = patientRepository.save(patient);
+        return patient;
     }
 
 

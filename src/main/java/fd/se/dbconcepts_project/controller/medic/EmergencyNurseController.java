@@ -54,7 +54,7 @@ public class EmergencyNurseController {
                                          @RequestParam State state) {
         final User currUser = subject.getUser();
         final List<Patient> statedPatients = patientService.
-                getAllPatientsByState(currUser.getMedic().getRegion(), condition, state);
+                getAllPatientsByState(region, condition, state);
         log.info("User {} get all patients.", currUser.getUsername());
         return ResponseEntity.ok(new PatientsResponse(statedPatients));
     }

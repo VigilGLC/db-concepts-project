@@ -1,6 +1,8 @@
 package fd.se.dbconcepts_project.service;
 
 
+import fd.se.dbconcepts_project.entity.consts.Profession;
+import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.medic.MedicBase;
 import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.pojo.request.account.ProfileChangeRequest;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -77,6 +78,10 @@ public class UserService {
         medic.setProfession(request.getProfession());
         user = userRepository.save(user);
         return user.getMedic();
+    }
+
+    public User getUserByRegionAndProfession(Region region, Profession profession) {
+        return userRepository.findByMedicRegionAndMedicProfession(region, profession);
     }
 
 
