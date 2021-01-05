@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import static fd.se.dbconcepts_project.entity.consts.Constants.*;
 import static fd.se.dbconcepts_project.entity.consts.Result.POSITIVE;
-import static fd.se.dbconcepts_project.entity.consts.State.TREATED;
+import static fd.se.dbconcepts_project.entity.consts.State.*;
 
 @Service
 @AllArgsConstructor
@@ -63,7 +63,7 @@ public class PatientService {
     }
 
     public List<Patient> getPatientsCanDischarge(Region region) {
-        return patientRepository.findPatientsCanDisCharge(region,
+        return patientRepository.findPatientsByTestsAndRegistrations(region,
                 TEST_CHECK_LIMIT, POSITIVE,
                 REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
     }
@@ -87,6 +87,7 @@ public class PatientService {
 
     @Transactional
     public WardBed arrangePatient(Patient patient) {
+        Region old = patient.getRegion();
         Region expected = Region.of(patient.getCondition().value);
         final List<Ward> wards =
                 wardRepository.findAvailableWardByRegion(expected);
@@ -103,7 +104,8 @@ public class PatientService {
         if (!wardBedOptional.isPresent()) return null;
         WardBed wardBed = wardBedOptional.get();
 
-        if (unbindPatient(patient)) {
+        final boolean hasEmptyBed = unbindPatient(patient);
+        if (hasEmptyBed) {
             log.info("Patient {} transferred to Region {}", patient.getId(), expected);
         }
 
@@ -117,14 +119,41 @@ public class PatientService {
                         Profession.HEAD_NURSE).getMedic(),
                 patient,
                 expected);
+        if (hasEmptyBed) {
+            rearrangePatients(old);
+        }
         return wardBed;
     }
+
+    @Transactional
+    public void rearrangePatients(Region regionHasBed) {
+        if (regionHasBed == null) return;
+        Condition targetCondition = Condition.of(regionHasBed.value);
+        final List<Patient> patientsIsolated = patientRepository.
+                findPatientsByRegionAndCondition(null, targetCondition);
+        for (Patient patient : patientsIsolated) {
+            if (arrangePatient(patient) != null) {
+                return;
+            }
+        }
+        final List<Patient> patientsNeedTransfer = patientRepository.
+                findPatientsByRegionNotAndCondition(regionHasBed, targetCondition);
+        for (Patient patient : patientsNeedTransfer) {
+            if (arrangePatient(patient) != null) {
+                return;
+            }
+        }
+
+    }
+
 
     private boolean unbindPatient(Patient patient) {
         if (patient.getRegion() == null) return false;
         patient.setWardNurse(null);
         patient.setWardBed(null);
         patientRepository.save(patient);
+        log.info("Patient {} left original Ward. ",
+                patient.getId());
         return true;
     }
 
@@ -138,6 +167,20 @@ public class PatientService {
             patient.setState(state);
         }
         patient = patientRepository.save(patient);
+        if (state == CURED || state == DIED) {
+            final Region oldRegion = patient.getRegion();
+            unbindPatient(patient);
+            rearrangePatients(oldRegion);
+        }else if (state == TREATED && condition != null) {
+            if (arrangePatient(patient) != null) {
+                log.info("Patient {} new Condition {}, Success to according Region",
+                        patient.getId(), condition);
+            } else {
+                log.warn("Patient {} new Condition {}, Failed to according Region",
+                        patient.getId(), condition);
+            }
+
+        }
         return patient;
     }
 

@@ -45,7 +45,6 @@ public class DoctorController {
     @PostMapping("/patient/change")
     public ResponseEntity<?> changePatientInfo(@RequestBody PatientChangeRequest request) {
         final User currUser = subject.getUser();
-        Region region = currUser.getMedic().getRegion();
         final Patient patient = patientService.
                 changePatientInfo(request.getId(), request.getCondition(), request.getState());
         log.info("User {} change info of Patient {}", currUser.getUsername(), request.getId());
