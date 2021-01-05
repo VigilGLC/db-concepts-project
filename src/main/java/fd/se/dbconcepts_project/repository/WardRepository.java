@@ -16,7 +16,7 @@ public interface WardRepository extends CrudRepository<Ward, Integer> {
 
     @Query(value = "select ward from Ward ward " +
             "where exists " +
-            "(select count(wardbed) from ward.wardBeds wardbed where WardBed .patient is null)")
+            "(select count(wardbed) from ward.wardBeds wardbed where wardbed.patient is null)")
     List<Ward> findAvailableWardByRegion(Region region);
 
 }

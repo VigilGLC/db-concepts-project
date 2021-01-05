@@ -12,9 +12,7 @@ import java.util.List;
 public interface WardNurseRepository extends CrudRepository<WardNurse, Integer> {
 
     @Query(value = "select wardnurse from WardNurse wardnurse " +
-            "where wardnurse.region =:region and  wardnurse.patients.size < :patientsMax")
+            "where wardnurse.region=:region and size(wardnurse.patients)<:patientsMax")
     List<WardNurse> findAvailableWardNursesByRegion(Region region, int patientsMax);
-
-    WardNurse finByRegion(Region region);
 
 }
