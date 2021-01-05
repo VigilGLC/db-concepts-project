@@ -15,7 +15,7 @@ public class WardBed {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Ward ward;
 
     @OneToOne

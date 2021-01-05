@@ -11,6 +11,7 @@ import fd.se.dbconcepts_project.entity.patient.listener.PatientAuditListener;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -32,5 +33,10 @@ public class Patient {
     @JsonBackReference
     @OneToOne
     private WardNurse wardNurse;
+
+    @OneToMany
+    private List<NucleicAcidTest> nucleicAcidTests;
+    @OneToMany
+    private List<InfoRegistration> infoRegistrations;
 
 }

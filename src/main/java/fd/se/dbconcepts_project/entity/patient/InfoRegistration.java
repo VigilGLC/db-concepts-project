@@ -24,7 +24,7 @@ public class InfoRegistration {
     private State state;
     private Result result;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Patient patient;
     @ManyToOne
     private WardNurse wardNurse;
