@@ -27,7 +27,7 @@ public class User {
     @JsonIgnore
     private Role role;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     private MedicBase medic;
 
 }

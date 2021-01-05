@@ -38,4 +38,10 @@ public class Constants {
     public static final int REGISTER_CHECK_LIMIT = 3;
     public static final double TEMPERATURE_BORDER = 37.3;
 
+
+    public static final String DISCHARGEABLE_NOTIFY_FORMAT =
+            "Message: Patient {} int Region {} Dischargeable. ";
+
+    public static final String TRANSFERRED_NOTIFY_FORMAT =
+            "Message: Patient {} already Transferred to Region {}. ";
 }

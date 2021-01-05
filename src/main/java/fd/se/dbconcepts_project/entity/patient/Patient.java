@@ -6,6 +6,7 @@ import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.entity.consts.Gender;
 import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.consts.State;
+import fd.se.dbconcepts_project.entity.hospital.WardBed;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import fd.se.dbconcepts_project.entity.patient.listener.PatientAuditListener;
 import lombok.Data;
@@ -31,12 +32,16 @@ public class Patient {
     private State state;
 
     @JsonBackReference
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     private WardNurse wardNurse;
 
-    @OneToMany
+    @JsonBackReference
+    @OneToOne(cascade = CascadeType.MERGE)
+    private WardBed wardBed;
+
+    @OneToMany(cascade = CascadeType.ALL)
     private List<NucleicAcidTest> nucleicAcidTests;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InfoRegistration> infoRegistrations;
 
 }

@@ -20,7 +20,7 @@ public class NucleicAcidTest {
     private Result result;
     private Condition condition;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Patient patient;
     @ManyToOne
     private Doctor doctor;
