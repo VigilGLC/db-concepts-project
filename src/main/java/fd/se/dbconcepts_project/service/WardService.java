@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -44,6 +43,7 @@ public class WardService {
             return null;
         }
         ward.getWardBeds().add(wardBed);
+        wardBed.setWard(ward);
         return wardRepository.save(ward);
     }
 
