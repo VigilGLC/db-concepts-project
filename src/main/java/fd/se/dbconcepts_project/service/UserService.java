@@ -3,6 +3,7 @@ package fd.se.dbconcepts_project.service;
 
 import fd.se.dbconcepts_project.entity.consts.Profession;
 import fd.se.dbconcepts_project.entity.consts.Region;
+import fd.se.dbconcepts_project.entity.consts.Role;
 import fd.se.dbconcepts_project.entity.medic.MedicBase;
 import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.pojo.request.account.ProfileChangeRequest;
@@ -35,6 +36,7 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setPassword(encryptUtils.encrypt(request.getPassword()));
         user.setGender(request.getGender());
+        user.setRole(Role.USER);
         return userRepository.save(user);
     }
 
