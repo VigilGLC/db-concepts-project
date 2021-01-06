@@ -4,7 +4,7 @@ package fd.se.dbconcepts_project.service;
 import fd.se.dbconcepts_project.entity.consts.Profession;
 import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.consts.Role;
-import fd.se.dbconcepts_project.entity.medic.MedicBase;
+import fd.se.dbconcepts_project.entity.medic.*;
 import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.pojo.request.account.ProfileChangeRequest;
 import fd.se.dbconcepts_project.pojo.request.account.SignInRequest;
@@ -73,12 +73,29 @@ public class UserService {
     public MedicBase assignProfession(ProfessionAssignRequest request) {
         User user = userRepository.findById(request.getId());
         if (user == null) return null;
-        final MedicBase medic = new MedicBase();
+        final MedicBase medic;
+        switch (request.getProfession()) {
+            case DOCTOR:
+                medic = new Doctor();
+                break;
+            case HEAD_NURSE:
+                medic = new HeadNurse();
+                break;
+            case WARD_NURSE:
+                medic = new WardNurse();
+                break;
+            case EMERGENCY_NURSE:
+                medic = new EmergencyNurse();
+                break;
+            default:
+                medic = new MedicBase();
+        }
         medic.setId(user.getId());
-        user.setMedic(medic);
         medic.setUser(user);
         medic.setRegion(request.getRegion());
         medic.setProfession(request.getProfession());
+
+        user.setMedic(medic);
         user = userRepository.save(user);
         return user.getMedic();
     }
