@@ -41,6 +41,10 @@ public class ProfessionService {
         return headNurseRepository.findByUser(user);
     }
 
+    public WardNurse getWardNurse(User user) {
+        return wardNurseRepository.findByUser(user);
+    }
+
     public Doctor getRegionDoctor(Region region) {
         return doctorRepository.findByUser(
                 userService.getUserByRegionAndProfession(region, Profession.DOCTOR));

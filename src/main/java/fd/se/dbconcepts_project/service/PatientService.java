@@ -6,11 +6,14 @@ import fd.se.dbconcepts_project.entity.hospital.Ward;
 import fd.se.dbconcepts_project.entity.hospital.WardBed;
 import fd.se.dbconcepts_project.entity.medic.Doctor;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
+import fd.se.dbconcepts_project.entity.patient.InfoRegistration;
 import fd.se.dbconcepts_project.entity.patient.NucleicAcidTest;
 import fd.se.dbconcepts_project.entity.patient.Patient;
 import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.pojo.request.doctor.NucleicAcidTestRequest;
 import fd.se.dbconcepts_project.pojo.request.emergencynurse.PatientEnrollRequest;
+import fd.se.dbconcepts_project.pojo.request.wardnurse.RegistrationReportRequest;
+import fd.se.dbconcepts_project.repository.NucleicAcidTestRepository;
 import fd.se.dbconcepts_project.repository.PatientRepository;
 import fd.se.dbconcepts_project.repository.WardNurseRepository;
 import fd.se.dbconcepts_project.repository.WardRepository;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +41,7 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final WardNurseRepository wardNurseRepository;
     private final WardRepository wardRepository;
+    private final NucleicAcidTestRepository nucleicAcidTestRepository;
 
     private final MessageService messageService;
     private final UserService userService;
@@ -45,7 +50,7 @@ public class PatientService {
         return patientRepository.findByWardNurseId(id);
     }
 
-    public List<Patient> getAllPatientsByState(Region region, Condition condition, State state) {
+    public List<Patient> getAllPatientsBy(Region region, Condition condition, State state) {
         final Specification<Patient> spec = (root, query, builder) -> {
             List<Predicate> preds = new ArrayList<>(4);
             preds.add(builder.equal(root.get("region"), region));
@@ -60,10 +65,10 @@ public class PatientService {
         return patientRepository.findAll(spec);
     }
 
-
     public Patient getPatientById(int id) {
         return patientRepository.findById(id);
     }
+
 
     public List<Patient> getPatientsCanDischarge(Region region) {
         return patientRepository.findPatientsByTestsAndRegistrations(region,
@@ -71,10 +76,24 @@ public class PatientService {
                 REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
     }
 
-
     public List<Patient> getPatientsRegionNotMatchCondition(Region region) {
         return patientRepository.
                 findPatientsByRegionAndConditionNot(region, Condition.of(region.value));
+    }
+
+    public List<Patient> getWardNursePatientsByCondition(WardNurse wardNurse, Condition condition) {
+        return patientRepository.
+                findPatientByWardNurseAndCondition(wardNurse, condition);
+    }
+
+    public List<Patient> getWardNursePatientsCanDischarge(int wardNurseId) {
+        return patientRepository.findWardNursePatientByTestsAndRegistrations(wardNurseId,
+                TEST_CHECK_LIMIT, POSITIVE,
+                REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
+    }
+
+    public NucleicAcidTest getTestForPatientByDate(int patientId, LocalDate date) {
+        return nucleicAcidTestRepository.findByPatientIdAndDate(patientId, date);
     }
 
 
@@ -203,6 +222,18 @@ public class PatientService {
         return test;
     }
 
+    @Transactional
+    public InfoRegistration registerPatient(WardNurse wardNurse, RegistrationReportRequest request) {
+        final int patientId = request.getId();
+        final Patient patient = getPatientById(patientId);
+        final InfoRegistration registration = request.toInfoRegistration();
+
+        registration.setWardNurse(wardNurse);
+        patient.getInfoRegistrations().add(registration);
+        patientRepository.save(patient);
+
+        return registration;
+    }
 
 }
 

@@ -2,6 +2,7 @@ package fd.se.dbconcepts_project.repository;
 
 import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
+import fd.se.dbconcepts_project.entity.usr.User;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,5 @@ public interface WardNurseRepository extends CrudRepository<WardNurse, Integer> 
     WardNurse findById(int id);
 
 
+    WardNurse findByUser(User user);
 }

@@ -76,7 +76,7 @@ public class MedicController {
     public ResponseEntity<?> getPatients(@RequestParam State state) {
         final User currUser = subject.getUser();
         final List<Patient> statedPatients = patientService.
-                getAllPatientsByState(currUser.getMedic().getRegion(), null, state);
+                getAllPatientsBy(currUser.getMedic().getRegion(), null, state);
         log.info("User {} get all patients.", currUser.getUsername());
         return ResponseEntity.ok(new PatientsResponse(statedPatients));
     }
@@ -85,6 +85,7 @@ public class MedicController {
     @GetMapping("/patient")
     public ResponseEntity<?> getPatient(@RequestParam int id) {
         final Patient patient = patientService.getPatientById(id);
+        log.info("Patient {} into required.", patient.getId());
         return ResponseEntity.ok(patient);
     }
 
@@ -95,7 +96,8 @@ public class MedicController {
         final List<Patient> patients =
                 patientService.getPatientsCanDischarge(
                         currUser.getMedic().getRegion());
-        return ResponseEntity.ok(patients);
+        log.info("User {} get patients can discharge.", currUser.getUsername());
+        return ResponseEntity.ok(new PatientsResponse(patients));
     }
 
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE})
@@ -105,7 +107,8 @@ public class MedicController {
         final List<Patient> patients =
                 patientService.getPatientsRegionNotMatchCondition(
                         currUser.getMedic().getRegion());
-        return ResponseEntity.ok(patients);
+        log.info("User {} get patients can transfer.", currUser.getUsername());
+        return ResponseEntity.ok(new PatientsResponse(patients));
     }
 
 

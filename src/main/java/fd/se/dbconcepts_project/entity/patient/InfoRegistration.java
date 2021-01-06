@@ -26,7 +26,5 @@ public class InfoRegistration {
     private Patient patient;
     @ManyToOne
     private WardNurse wardNurse;
-    @OneToOne
-    private NucleicAcidTest nucleicAcidTest;
 
 }
