@@ -1,6 +1,7 @@
 package fd.se.dbconcepts_project.entity.hospital;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import fd.se.dbconcepts_project.entity.patient.Patient;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class WardBed {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     private Ward ward;
 

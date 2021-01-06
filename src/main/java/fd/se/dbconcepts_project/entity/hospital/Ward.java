@@ -1,5 +1,6 @@
 package fd.se.dbconcepts_project.entity.hospital;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import fd.se.dbconcepts_project.entity.consts.Region;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class Ward {
 
     private Region region;
 
+    @JsonBackReference
     @OneToMany(cascade = CascadeType.ALL)
     private List<WardBed> wardBeds;
 
