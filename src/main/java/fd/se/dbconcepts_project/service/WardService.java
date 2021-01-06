@@ -24,6 +24,11 @@ public class WardService {
     }
 
     @Transactional
+    public List<Ward> getAllWardsByRegion(Region region) {
+        return wardRepository.findAllByRegion(region);
+    }
+
+    @Transactional
     public Ward addWard(Region region) {
         final Ward ward = new Ward();
         ward.setRegion(region);
@@ -43,7 +48,7 @@ public class WardService {
     }
 
     @Transactional
-    public Set<WardBed> getWardBeds(int wardId) {
+    public List<WardBed> getWardBeds(int wardId) {
         return wardRepository.findById(wardId).getWardBeds();
     }
 

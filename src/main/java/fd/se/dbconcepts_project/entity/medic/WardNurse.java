@@ -3,6 +3,7 @@ package fd.se.dbconcepts_project.entity.medic;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import fd.se.dbconcepts_project.entity.patient.Patient;
+import lombok.Data;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 
 @Entity
 @OnDelete(action = OnDeleteAction.CASCADE)
+@Data
 public class WardNurse extends MedicBase {
 
     @JsonBackReference

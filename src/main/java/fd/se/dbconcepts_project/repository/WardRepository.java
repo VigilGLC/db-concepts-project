@@ -12,6 +12,9 @@ import java.util.List;
 public interface WardRepository extends CrudRepository<Ward, Integer> {
     List<Ward> findAll();
 
+    List<Ward> findAllByRegion(Region region);
+
+
     Ward findById(int id);
 
     @Query(value = "select ward from Ward ward " +

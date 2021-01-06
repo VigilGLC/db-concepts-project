@@ -12,7 +12,7 @@ import fd.se.dbconcepts_project.pojo.response.PatientsResponse;
 import fd.se.dbconcepts_project.pojo.response.UsersResponse;
 import fd.se.dbconcepts_project.service.MessageService;
 import fd.se.dbconcepts_project.service.PatientService;
-import fd.se.dbconcepts_project.service.WardNurseService;
+import fd.se.dbconcepts_project.service.ProfessionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ import static fd.se.dbconcepts_project.entity.consts.Role.USER;
 public class MedicController {
 
     private final MessageService messageService;
-    private final WardNurseService wardNurseService;
+    private final ProfessionService professionService;
     private final PatientService patientService;
 
     private final Subject subject;
@@ -58,7 +58,7 @@ public class MedicController {
     public ResponseEntity<?> getWardNurses() {
         final User currUser = subject.getUser();
         final MedicBase currMedic = currUser.getMedic();
-        final List<User> wardNurseUsers = wardNurseService.getWardNurseUsers(currMedic.getRegion());
+        final List<User> wardNurseUsers = professionService.getWardNurseUsers(currMedic.getRegion());
         log.info("User {} get wardnurses.", currUser.getUsername());
         return ResponseEntity.ok(new UsersResponse(wardNurseUsers));
     }

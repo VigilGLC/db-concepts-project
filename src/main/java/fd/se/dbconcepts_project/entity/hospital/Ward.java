@@ -4,6 +4,7 @@ import fd.se.dbconcepts_project.entity.consts.Region;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,7 +17,7 @@ public class Ward {
     private Region region;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<WardBed> wardBeds;
+    private List<WardBed> wardBeds;
 
 
 }
