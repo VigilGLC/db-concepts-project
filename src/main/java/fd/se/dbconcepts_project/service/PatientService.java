@@ -1,12 +1,17 @@
 package fd.se.dbconcepts_project.service;
 
 
-import fd.se.dbconcepts_project.entity.consts.*;
+import fd.se.dbconcepts_project.entity.consts.Condition;
+import fd.se.dbconcepts_project.entity.consts.MessageType;
+import fd.se.dbconcepts_project.entity.consts.Region;
+import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.hospital.Ward;
 import fd.se.dbconcepts_project.entity.hospital.WardBed;
+import fd.se.dbconcepts_project.entity.medic.Doctor;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import fd.se.dbconcepts_project.entity.patient.NucleicAcidTest;
 import fd.se.dbconcepts_project.entity.patient.Patient;
+import fd.se.dbconcepts_project.pojo.request.doctor.NucleicAcidTestRequest;
 import fd.se.dbconcepts_project.pojo.request.emergencynurse.PatientEnrollRequest;
 import fd.se.dbconcepts_project.repository.PatientRepository;
 import fd.se.dbconcepts_project.repository.WardNurseRepository;
@@ -36,7 +41,7 @@ public class PatientService {
     private final WardRepository wardRepository;
 
     private final MessageService messageService;
-    private final UserService userService;
+    private final ProfessionService professionService;
 
     public List<Patient> getWardNursePatients(int id) {
         return patientRepository.findByWardNurseId(id);
@@ -120,11 +125,9 @@ public class PatientService {
 
         messageService.createMessage(
                 MessageType.TRANSFERRED_NOTIFY,
-                userService.getUserByRegionAndProfession(expected,
-                        Profession.HEAD_NURSE).getMedic(),
+                professionService.getRegionDoctor(expected),
                 patient,
                 expected);
-
 
         return wardBed;
     }
@@ -187,6 +190,18 @@ public class PatientService {
 
         }
         return patient;
+    }
+
+
+    @Transactional
+    public NucleicAcidTest testPatient(Doctor doctor, NucleicAcidTestRequest request) {
+        final int patientId = request.getId();
+        final NucleicAcidTest test = request.toNucleicAcidTest();
+        final Patient patient = getPatientById(patientId);
+        test.setDoctor(doctor);
+        patient.getNucleicAcidTests().add(test);
+        patientRepository.save(patient);
+        return test;
     }
 
 
