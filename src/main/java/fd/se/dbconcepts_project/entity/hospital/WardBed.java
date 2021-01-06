@@ -15,7 +15,7 @@ public class WardBed {
     private Integer id;
 
     @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Ward ward;
 
     @OneToOne
