@@ -1,11 +1,12 @@
 package fd.se.dbconcepts_project.controller.medic;
 
+import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.interceptor.authorize.Authorize;
 import fd.se.dbconcepts_project.pojo.request.wardnurse.RegistrationReportRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static fd.se.dbconcepts_project.entity.consts.Profession.WARD_NURSE;
 import static fd.se.dbconcepts_project.entity.consts.Role.USER;
@@ -15,8 +16,8 @@ import static fd.se.dbconcepts_project.entity.consts.Role.USER;
 public class WardNurseController {
 
     @Authorize(role = USER, professions = {WARD_NURSE})
-    @GetMapping("/patients/state")
-    public ResponseEntity<?> getAllPatients(@RequestParam String state) {
+    @GetMapping("/patients/condition")
+    public ResponseEntity<?> getAllPatients(@RequestParam Condition condition) {
         return ResponseEntity.ok().build();
     }
 
@@ -36,7 +37,7 @@ public class WardNurseController {
     @Authorize(role = USER, professions = {WARD_NURSE})
     @GetMapping("/patient/test")
     public ResponseEntity<?> checkNucleicAcidTest(@RequestParam int id,
-                                                  @RequestParam LocalDateTime time) {
+                                                  @RequestParam LocalDate date) {
         return ResponseEntity.ok().build();
     }
 

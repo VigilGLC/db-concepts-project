@@ -8,7 +8,6 @@ import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.hospital.WardBed;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
-import fd.se.dbconcepts_project.entity.patient.listener.PatientAuditListener;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @Data
 @Entity
-@EntityListeners(PatientAuditListener.class)
 public class Patient {
 
     @Id

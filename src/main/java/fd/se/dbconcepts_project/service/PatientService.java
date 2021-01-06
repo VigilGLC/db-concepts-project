@@ -1,16 +1,14 @@
 package fd.se.dbconcepts_project.service;
 
 
-import fd.se.dbconcepts_project.entity.consts.Condition;
-import fd.se.dbconcepts_project.entity.consts.MessageType;
-import fd.se.dbconcepts_project.entity.consts.Region;
-import fd.se.dbconcepts_project.entity.consts.State;
+import fd.se.dbconcepts_project.entity.consts.*;
 import fd.se.dbconcepts_project.entity.hospital.Ward;
 import fd.se.dbconcepts_project.entity.hospital.WardBed;
 import fd.se.dbconcepts_project.entity.medic.Doctor;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import fd.se.dbconcepts_project.entity.patient.NucleicAcidTest;
 import fd.se.dbconcepts_project.entity.patient.Patient;
+import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.pojo.request.doctor.NucleicAcidTestRequest;
 import fd.se.dbconcepts_project.pojo.request.emergencynurse.PatientEnrollRequest;
 import fd.se.dbconcepts_project.repository.PatientRepository;
@@ -41,7 +39,7 @@ public class PatientService {
     private final WardRepository wardRepository;
 
     private final MessageService messageService;
-    private final ProfessionService professionService;
+    private final UserService userService;
 
     public List<Patient> getWardNursePatients(int id) {
         return patientRepository.findByWardNurseId(id);
@@ -122,10 +120,11 @@ public class PatientService {
         if (hasEmptyBed) {
             rearrangePatients(old);
         }
-
+        final User headNurseUser =
+                userService.getUserByRegionAndProfession(expected, Profession.HEAD_NURSE);
         messageService.createMessage(
                 MessageType.TRANSFERRED_NOTIFY,
-                professionService.getRegionDoctor(expected),
+                headNurseUser.getMedic(),
                 patient,
                 expected);
 
