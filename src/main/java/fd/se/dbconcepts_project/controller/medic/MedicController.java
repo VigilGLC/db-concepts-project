@@ -88,8 +88,13 @@ public class MedicController {
     @GetMapping("/patient")
     public ResponseEntity<?> getPatient(@RequestParam int id) {
         final Patient patient = patientService.getPatientById(id);
-        log.info("Patient {} into required.", patient.getId());
-        return ResponseEntity.ok(patient);
+        if (patient != null) {
+            log.info("Patient {} into required.", patient.getId());
+            return ResponseEntity.ok(patient);
+        } else {
+            log.warn("Patient {} not found.", id);
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE})
