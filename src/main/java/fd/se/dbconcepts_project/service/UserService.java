@@ -76,6 +76,7 @@ public class UserService {
         final MedicBase medic = new MedicBase();
         medic.setId(user.getId());
         user.setMedic(medic);
+        medic.setUser(user);
         medic.setRegion(request.getRegion());
         medic.setProfession(request.getProfession());
         user = userRepository.save(user);

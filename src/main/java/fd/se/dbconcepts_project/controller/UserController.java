@@ -11,14 +11,8 @@ import fd.se.dbconcepts_project.utils.TokenUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
-
-import static fd.se.dbconcepts_project.entity.consts.Role.ADMIN;
 import static fd.se.dbconcepts_project.entity.consts.Role.USER;
 
 @RestController
@@ -47,7 +41,7 @@ public class UserController {
     }
 
     @Authorize(role = USER)
-    @GetMapping(value = "/profile/change")
+    @PostMapping(value = "/profile/change")
     public ResponseEntity<?> changeProfile(@RequestBody ProfileChangeRequest request) {
         final User currUser = subject.getUser();
         final User user = userService.changeProfile(currUser, request);
