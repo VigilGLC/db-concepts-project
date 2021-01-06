@@ -3,6 +3,7 @@ package fd.se.dbconcepts_project.repository;
 import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.consts.Result;
+import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import fd.se.dbconcepts_project.entity.patient.Patient;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -61,15 +62,15 @@ public interface PatientRepository extends CrudRepository<Patient, Integer>,
                     "   where TEMPERATURE <= ?5 )"
     )
     List<Patient> findWardNursePatientByTestsAndRegistrations(int wardNurseId,  // ?1
-                                                        int testLimit, Result testResult, // ?2, ?3
-                                                        int registLimit, double temperature); // ?4, ?5
+                                                              int testLimit, Result testResult, // ?2, ?3
+                                                              int registLimit, double temperature); // ?4, ?5
 
-    List<Patient> findPatientsByRegionAndCondition(Region region, Condition condition);
+    List<Patient> findPatientByWardNurseAndCondition(WardNurse wardNurse, Condition condition);
 
     List<Patient> findPatientsByRegionAndConditionNot(Region region, Condition condition);
 
-    List<Patient> findPatientsByRegionNotAndCondition(Region region, Condition condition);
+    List<Patient> findPatientsByRegionAndConditionAndState(Region region, Condition condition, State state);
 
-    List<Patient> findPatientByWardNurseAndCondition(WardNurse wardNurse, Condition condition);
+    List<Patient> findPatientsByRegionNotAndConditionAndState(Region region, Condition condition, State state);
 
 }

@@ -155,14 +155,14 @@ public class PatientService {
         if (regionHasBed == null) return;
         Condition targetCondition = Condition.of(regionHasBed.value);
         final List<Patient> patientsIsolated = patientRepository.
-                findPatientsByRegionAndCondition(null, targetCondition);
+                findPatientsByRegionAndConditionAndState(null, targetCondition, TREATED);
         for (Patient patient : patientsIsolated) {
             if (arrangePatient(patient) != null) {
                 return;
             }
         }
         final List<Patient> patientsNeedTransfer = patientRepository.
-                findPatientsByRegionNotAndCondition(regionHasBed, targetCondition);
+                findPatientsByRegionNotAndConditionAndState(regionHasBed, targetCondition, TREATED);
         for (Patient patient : patientsNeedTransfer) {
             if (arrangePatient(patient) != null) {
                 return;
