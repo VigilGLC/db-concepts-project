@@ -8,6 +8,7 @@ import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.interceptor.Subject;
 import fd.se.dbconcepts_project.interceptor.authorize.Authorize;
 import fd.se.dbconcepts_project.pojo.request.MereIdRequest;
+import fd.se.dbconcepts_project.pojo.response.MessagesResponse;
 import fd.se.dbconcepts_project.pojo.response.PatientsResponse;
 import fd.se.dbconcepts_project.pojo.response.UsersResponse;
 import fd.se.dbconcepts_project.service.MessageService;
@@ -40,7 +41,7 @@ public class MedicController {
     public ResponseEntity<?> checkMessages() {
         final User currUser = subject.getUser();
         log.info("User {} get all messages.", currUser.getUsername());
-        return ResponseEntity.ok(messageService.getAllMessages(currUser));
+        return ResponseEntity.ok(new MessagesResponse(messageService.getAllMessages(currUser)));
     }
 
     @Authorize(role = USER)
