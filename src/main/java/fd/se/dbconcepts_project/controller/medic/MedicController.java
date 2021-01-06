@@ -8,6 +8,7 @@ import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.interceptor.Subject;
 import fd.se.dbconcepts_project.interceptor.authorize.Authorize;
 import fd.se.dbconcepts_project.pojo.request.MereIdRequest;
+import fd.se.dbconcepts_project.pojo.request.patient.PatientFilterRequest;
 import fd.se.dbconcepts_project.pojo.response.MessagesResponse;
 import fd.se.dbconcepts_project.pojo.response.PatientsResponse;
 import fd.se.dbconcepts_project.pojo.response.UsersResponse;
@@ -74,7 +75,8 @@ public class MedicController {
 
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE})
     @GetMapping("/patients")
-    public ResponseEntity<?> getPatients(@RequestParam State state) {
+    public ResponseEntity<?> getPatients(@RequestBody PatientFilterRequest request) {
+        final State state = request.getState();
         final User currUser = subject.getUser();
         final List<Patient> statedPatients = patientService.
                 getAllPatientsBy(currUser.getMedic().getRegion(), null, state);
