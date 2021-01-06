@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static fd.se.dbconcepts_project.entity.consts.Constants.*;
+import static fd.se.dbconcepts_project.entity.consts.Profession.DOCTOR;
+import static fd.se.dbconcepts_project.entity.consts.Profession.HEAD_NURSE;
 import static fd.se.dbconcepts_project.entity.consts.Result.POSITIVE;
 import static fd.se.dbconcepts_project.entity.consts.State.*;
 
@@ -139,13 +141,7 @@ public class PatientService {
         if (hasEmptyBed) {
             rearrangePatients(old);
         }
-        final User headNurseUser =
-                userService.getUserByRegionAndProfession(expected, Profession.HEAD_NURSE);
-        messageService.createMessage(
-                MessageType.TRANSFERRED_NOTIFY,
-                headNurseUser.getMedic(),
-                patient,
-                expected);
+        notifyTransferred(patient);
 
         return wardBed;
     }
@@ -210,27 +206,54 @@ public class PatientService {
         return patient;
     }
 
+    private User getUserOf(Region region, Profession profession) {
+        return userService.getUserByRegionAndProfession(region, profession);
+    }
+
+    private void tryNotifyDischarge(Patient patient) {
+        patient = patientRepository.testPatientByTestsAndRegistrations(patient.getId(),
+                TEST_CHECK_LIMIT, POSITIVE,
+                REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
+        if (patient != null) {
+            messageService.createMessage(MessageType.TRANSFERRED_NOTIFY,
+                    getUserOf(patient.getRegion(), DOCTOR).getMedic(),
+                    patient, patient.getRegion());
+        }
+    }
+
+    private void notifyTransferred(Patient patient) {
+        messageService.createMessage(
+                MessageType.TRANSFERRED_NOTIFY,
+                getUserOf(patient.getRegion(), HEAD_NURSE).getMedic(),
+                patient,
+                patient.getRegion());
+    }
 
     @Transactional
     public NucleicAcidTest testPatient(Doctor doctor, NucleicAcidTestRequest request) {
         final int patientId = request.getId();
         final NucleicAcidTest test = request.toNucleicAcidTest();
-        final Patient patient = getPatientById(patientId);
+        Patient patient = getPatientById(patientId);
         test.setDoctor(doctor);
         patient.getNucleicAcidTests().add(test);
-        patientRepository.save(patient);
+        patient = patientRepository.save(patient);
+
+        tryNotifyDischarge(patient);
+
         return test;
     }
 
     @Transactional
     public InfoRegistration registerPatient(WardNurse wardNurse, RegistrationReportRequest request) {
         final int patientId = request.getId();
-        final Patient patient = getPatientById(patientId);
+        Patient patient = getPatientById(patientId);
         final InfoRegistration registration = request.toInfoRegistration();
 
         registration.setWardNurse(wardNurse);
         patient.getInfoRegistrations().add(registration);
         patientRepository.save(patient);
+
+        tryNotifyDischarge(patient);
 
         return registration;
     }
