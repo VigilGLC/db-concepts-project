@@ -133,6 +133,8 @@ public class PatientService {
         final boolean hasEmptyBed = unbindPatient(patient);
         if (hasEmptyBed) {
             log.info("Patient {} transferred to Region {}", patient.getId(), expected);
+        }else {
+            log.info("Patient {} get in from Isolation. ", patient.getId());
         }
         patient.setRegion(expected);
         patient.setWardNurse(wardNurse);
@@ -174,9 +176,14 @@ public class PatientService {
 
     private boolean unbindPatient(Patient patient) {
         if (patient.getRegion() == null) return false;
+        final WardNurse wardNurse = patient.getWardNurse();
+        final WardBed wardBed = patient.getWardBed();
         patient.setRegion(null);
         patient.setWardNurse(null);
         patient.setWardBed(null);
+
+        wardNurse.getPatients().remove(patient);
+        wardBed.setPatient(null);
         patientRepository.save(patient);
         log.info("Patient {} left original Ward. ",
                 patient.getId());

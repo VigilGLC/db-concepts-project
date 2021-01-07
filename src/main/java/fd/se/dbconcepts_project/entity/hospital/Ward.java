@@ -19,7 +19,7 @@ public class Ward {
     private Region region;
 
     @JsonBackReference
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<WardBed> wardBeds;
 
 
