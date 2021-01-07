@@ -258,6 +258,7 @@ public class PatientService {
         final InfoRegistration registration = request.toInfoRegistration();
 
         registration.setWardNurse(wardNurse);
+        registration.setPatient(patient);
         patient.getInfoRegistrations().add(registration);
         patientRepository.save(patient);
 

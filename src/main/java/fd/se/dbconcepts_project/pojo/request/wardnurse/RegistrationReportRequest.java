@@ -5,6 +5,7 @@ import fd.se.dbconcepts_project.entity.consts.Result;
 import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.patient.InfoRegistration;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -13,6 +14,7 @@ public class RegistrationReportRequest {
 
     private int id; // patient id
 
+    @DateTimeFormat(pattern = "yyyy-MM-hh")
     private LocalDate date;
     private double temperature;
     private String symptom;
