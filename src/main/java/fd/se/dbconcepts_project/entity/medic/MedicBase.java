@@ -6,6 +6,7 @@ import fd.se.dbconcepts_project.entity.consts.Profession;
 import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.usr.User;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -21,6 +22,7 @@ public class MedicBase {
     private Profession profession;
 
 
+    @ToString.Exclude
     @JsonIgnore
     @OneToOne
     private User user;

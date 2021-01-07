@@ -137,6 +137,10 @@ public class PatientService {
         patient.setRegion(expected);
         patient.setWardNurse(wardNurse);
         patient.setWardBed(wardBed);
+
+        wardBed.setPatient(patient);
+        wardNurse.getPatients().add(patient);
+
         patient = patientRepository.save(patient);
         if (hasEmptyBed) {
             rearrangePatients(old);
