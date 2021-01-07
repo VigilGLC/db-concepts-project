@@ -242,6 +242,7 @@ public class PatientService {
         final NucleicAcidTest test = request.toNucleicAcidTest();
         Patient patient = getPatientById(patientId);
         test.setDoctor(doctor);
+        test.setPatient(patient);
         patient.getNucleicAcidTests().add(test);
         patient = patientRepository.save(patient);
 
