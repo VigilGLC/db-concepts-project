@@ -8,6 +8,7 @@ import fd.se.dbconcepts_project.entity.patient.Patient;
 import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.interceptor.Subject;
 import fd.se.dbconcepts_project.interceptor.authorize.Authorize;
+import fd.se.dbconcepts_project.pojo.request.patient.PatientFilterRequest;
 import fd.se.dbconcepts_project.pojo.request.wardnurse.RegistrationReportRequest;
 import fd.se.dbconcepts_project.pojo.response.PatientsResponse;
 import fd.se.dbconcepts_project.service.PatientService;
@@ -36,7 +37,8 @@ public class WardNurseController {
 
     @Authorize(role = USER, professions = {WARD_NURSE})
     @GetMapping("/patients/condition")
-    public ResponseEntity<?> getAllPatients(@RequestParam Condition condition) {
+    public ResponseEntity<?> getAllPatients(@RequestBody PatientFilterRequest request) {
+        final Condition condition = request.getCondition();
         final User currUser = subject.getUser();
         final WardNurse wardNurse = professionService.getWardNurse(currUser);
         final List<Patient> statedPatients = patientService.
