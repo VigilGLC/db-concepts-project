@@ -105,6 +105,7 @@ public class PatientService {
         patient.setState(TREATED);
         patient.setCondition(test.getCondition());
         patient.getNucleicAcidTests().add(test);
+        test.setPatient(patient);
         return patientRepository.save(patient);
     }
 
