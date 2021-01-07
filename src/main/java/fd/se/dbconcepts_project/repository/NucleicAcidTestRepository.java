@@ -23,6 +23,6 @@ public interface NucleicAcidTestRepository extends CrudRepository<NucleicAcidTes
                     "       order by DATE desc limit ?2)" +
                     "where RESULT=?3"
     )
-    int countByPatientOrderByDateTop(int patientId, int limit, Result result);
+    int countByPatientOrderByDateTop(int patientId, int limit, int result);
 
 }

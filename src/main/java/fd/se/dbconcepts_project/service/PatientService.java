@@ -222,7 +222,7 @@ public class PatientService {
 
     private void tryNotifyDischarge(Patient patient) {
         if (canPatientDischargeFunction(patient, testRepository, registRepository)) {
-            messageService.createMessage(MessageType.TRANSFERRED_NOTIFY,
+            messageService.createMessage(MessageType.DISCHARGEABLE_NOTIFY,
                     getUserOf(patient.getRegion(), DOCTOR).getMedic(),
                     patient, patient.getRegion());
         }
@@ -272,15 +272,16 @@ public class PatientService {
                                                        NucleicAcidTestRepository nucleicAcidTestRepository,
                                                        InfoRegistrationRepository infoRegistrationRepository) {
         final int patientId = patient.getId();
-
         return
-                TEST_CHECK_LIMIT ==
-                        nucleicAcidTestRepository.
-                                countByPatientOrderByDateTop(patientId, TEST_CHECK_LIMIT, NEGATIVE)
-                        &&
-                        REGISTER_CHECK_LIMIT ==
-                                infoRegistrationRepository.
-                                        countByPatientOrderByDateTop(patientId, REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
+                TEST_CHECK_LIMIT == nucleicAcidTestRepository.countByPatientOrderByDateTop(
+                        patientId,
+                        TEST_CHECK_LIMIT,
+                        NEGATIVE.ordinal())
+                        && REGISTER_CHECK_LIMIT == infoRegistrationRepository.
+                        countByPatientOrderByDateTop(
+                                patientId,
+                                REGISTER_CHECK_LIMIT,
+                                TEMPERATURE_BORDER);
     }
 
 }
