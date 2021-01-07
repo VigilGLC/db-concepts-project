@@ -2,6 +2,7 @@ package fd.se.dbconcepts_project.entity.medic;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fd.se.dbconcepts_project.entity.patient.Patient;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ import java.util.Set;
 @Setter
 public class WardNurse extends MedicBase {
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany
     private Set<Patient> patients;
 

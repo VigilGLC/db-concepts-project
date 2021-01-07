@@ -2,13 +2,13 @@ package fd.se.dbconcepts_project.entity.patient;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.entity.consts.Gender;
 import fd.se.dbconcepts_project.entity.consts.Region;
 import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.hospital.WardBed;
 import fd.se.dbconcepts_project.entity.medic.WardNurse;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,8 +41,10 @@ public class Patient {
     @OneToOne(cascade = CascadeType.MERGE)
     private WardBed wardBed;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private List<NucleicAcidTest> nucleicAcidTests = new ArrayList<>();
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL)
     private List<InfoRegistration> infoRegistrations = new ArrayList<>();
 

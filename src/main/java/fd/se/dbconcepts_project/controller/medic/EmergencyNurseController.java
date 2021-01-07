@@ -10,6 +10,7 @@ import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.interceptor.Subject;
 import fd.se.dbconcepts_project.interceptor.authorize.Authorize;
 import fd.se.dbconcepts_project.pojo.request.emergencynurse.PatientEnrollRequest;
+import fd.se.dbconcepts_project.pojo.request.patient.PatientFilterRequest;
 import fd.se.dbconcepts_project.pojo.response.PatientsResponse;
 import fd.se.dbconcepts_project.service.PatientService;
 import lombok.AllArgsConstructor;
@@ -49,9 +50,10 @@ public class EmergencyNurseController {
 
     @Authorize(role = USER, professions = {EMERGENCY_NURSE})
     @GetMapping("/patients")
-    public ResponseEntity<?> getPatients(@RequestParam Region region,
-                                         @RequestParam Condition condition,
-                                         @RequestParam State state) {
+    public ResponseEntity<?> getPatients(@RequestBody PatientFilterRequest request) {
+        final Region region = request.getRegion();
+        final Condition condition = request.getCondition();
+        final State state = request.getState();
         final User currUser = subject.getUser();
         final List<Patient> statedPatients = patientService.
                 getAllPatientsBy(region, condition, state);
