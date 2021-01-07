@@ -24,8 +24,11 @@ public class User {
     private String password;
 
     private String name;
+
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Enumerated(EnumType.STRING)
     @JsonIgnore
     private Role role;
 

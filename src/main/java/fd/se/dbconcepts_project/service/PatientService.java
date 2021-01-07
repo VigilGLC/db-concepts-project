@@ -276,7 +276,7 @@ public class PatientService {
                 TEST_CHECK_LIMIT == nucleicAcidTestRepository.countByPatientOrderByDateTop(
                         patientId,
                         TEST_CHECK_LIMIT,
-                        NEGATIVE.ordinal())
+                        NEGATIVE.value)
                         && REGISTER_CHECK_LIMIT == infoRegistrationRepository.
                         countByPatientOrderByDateTop(
                                 patientId,

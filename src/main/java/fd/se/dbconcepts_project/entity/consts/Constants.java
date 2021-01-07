@@ -31,8 +31,8 @@ public class Constants {
     public static final int SEVERE_WARDBEDS_MAX = 2;
     public static final int CRITICAL_WARDBEDS_MAX = 1;
 
-    public static final String STRING_POSITIVE = "+";
-    public static final String STRING_NEGATIVE = "-";
+    public static final String STRING_POSITIVE = "positive";
+    public static final String STRING_NEGATIVE = "negative";
 
     public static final int TEST_CHECK_LIMIT = 2;
     public static final int REGISTER_CHECK_LIMIT = 3;

@@ -16,6 +16,7 @@ public class Ward {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     private Region region;
 
     @JsonBackReference

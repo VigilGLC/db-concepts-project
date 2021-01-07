@@ -1,6 +1,5 @@
 package fd.se.dbconcepts_project.repository;
 
-import fd.se.dbconcepts_project.entity.consts.Result;
 import fd.se.dbconcepts_project.entity.patient.NucleicAcidTest;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -21,8 +20,8 @@ public interface NucleicAcidTestRepository extends CrudRepository<NucleicAcidTes
                     "   (select * from NUCLEIC_ACID_TEST" +
                     "       where NUCLEIC_ACID_TEST.PATIENT_ID=?1 " +
                     "       order by DATE desc limit ?2)" +
-                    "where RESULT=?3"
+                    "where upper(RESULT)=upper(?3)"
     )
-    int countByPatientOrderByDateTop(int patientId, int limit, int result);
+    int countByPatientOrderByDateTop(int patientId, int limit, String result);
 
 }

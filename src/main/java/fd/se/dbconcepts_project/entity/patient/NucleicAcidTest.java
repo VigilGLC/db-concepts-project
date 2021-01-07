@@ -2,9 +2,7 @@ package fd.se.dbconcepts_project.entity.patient;
 
 import fd.se.dbconcepts_project.entity.consts.Condition;
 import fd.se.dbconcepts_project.entity.consts.Result;
-import fd.se.dbconcepts_project.entity.consts.State;
 import fd.se.dbconcepts_project.entity.medic.Doctor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +18,10 @@ public class NucleicAcidTest {
     private Integer id;
 
     private LocalDate date;
+
+    @Enumerated(EnumType.STRING)
     private Result result;
+    @Enumerated(EnumType.STRING)
     private Condition condition;
 
     @ManyToOne

@@ -22,7 +22,10 @@ public class InfoRegistration {
     private LocalDate date;
     private double temperature;
     private String symptom;
+
+    @Enumerated(EnumType.STRING)
     private State state;
+    @Enumerated(EnumType.STRING)
     private Result result;
 
     @ManyToOne

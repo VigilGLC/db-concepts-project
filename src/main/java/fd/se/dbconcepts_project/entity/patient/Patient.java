@@ -26,11 +26,16 @@ public class Patient {
     private Integer id;
 
     private String name;
+
+    @Enumerated(EnumType.STRING)
     private Gender gender;
     private String address;
 
+    @Enumerated(EnumType.STRING)
     private Region region;
+    @Enumerated(EnumType.STRING)
     private Condition condition;
+    @Enumerated(EnumType.STRING)
     private State state;
 
     @JsonBackReference

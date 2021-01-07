@@ -17,8 +17,10 @@ public class MedicBase {
     @Id
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     private Region region;
 
+    @Enumerated(EnumType.STRING)
     private Profession profession;
 
 
