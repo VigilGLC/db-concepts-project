@@ -13,10 +13,7 @@ import fd.se.dbconcepts_project.entity.usr.User;
 import fd.se.dbconcepts_project.pojo.request.doctor.NucleicAcidTestRequest;
 import fd.se.dbconcepts_project.pojo.request.emergencynurse.PatientEnrollRequest;
 import fd.se.dbconcepts_project.pojo.request.wardnurse.RegistrationReportRequest;
-import fd.se.dbconcepts_project.repository.NucleicAcidTestRepository;
-import fd.se.dbconcepts_project.repository.PatientRepository;
-import fd.se.dbconcepts_project.repository.WardNurseRepository;
-import fd.se.dbconcepts_project.repository.WardRepository;
+import fd.se.dbconcepts_project.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,7 +23,6 @@ import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +41,8 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final WardNurseRepository wardNurseRepository;
     private final WardRepository wardRepository;
-    private final NucleicAcidTestRepository nucleicAcidTestRepository;
+    private final NucleicAcidTestRepository testRepository;
+    private final InfoRegistrationRepository registRepository;
 
     private final MessageService messageService;
     private final UserService userService;
@@ -76,7 +73,8 @@ public class PatientService {
 
     public List<Patient> getPatientsCanDischarge(Region region) {
         return patientRepository.findByRegion(region).stream().
-                filter(canPatientDischarge).collect(Collectors.toList());
+                filter(p -> canPatientDischargeFunction(p, testRepository, registRepository)).
+                collect(Collectors.toList());
     }
 
     public List<Patient> getPatientsRegionNotMatchCondition(Region region) {
@@ -91,11 +89,12 @@ public class PatientService {
 
     public List<Patient> getWardNursePatientsCanDischarge(int wardNurseId) {
         return patientRepository.findByWardNurseId(wardNurseId).stream().
-                filter(canPatientDischarge).collect(Collectors.toList());
+                filter(p -> canPatientDischargeFunction(p, testRepository, registRepository)).
+                collect(Collectors.toList());
     }
 
     public NucleicAcidTest getTestForPatientByDate(int patientId, LocalDate date) {
-        return nucleicAcidTestRepository.findByPatientIdAndDate(patientId, date);
+        return testRepository.findByPatientIdAndDate(patientId, date);
     }
 
 
@@ -133,7 +132,7 @@ public class PatientService {
         final boolean hasEmptyBed = unbindPatient(patient);
         if (hasEmptyBed) {
             log.info("Patient {} transferred to Region {}", patient.getId(), expected);
-        }else {
+        } else {
             log.info("Patient {} get in from Isolation. ", patient.getId());
         }
         patient.setRegion(expected);
@@ -222,7 +221,7 @@ public class PatientService {
     }
 
     private void tryNotifyDischarge(Patient patient) {
-        if (canPatientDischarge.test(patient)) {
+        if (canPatientDischargeFunction(patient, testRepository, registRepository)) {
             messageService.createMessage(MessageType.TRANSFERRED_NOTIFY,
                     getUserOf(patient.getRegion(), DOCTOR).getMedic(),
                     patient, patient.getRegion());
@@ -267,22 +266,20 @@ public class PatientService {
     }
 
 
-    private static final java.util.function.Predicate<Patient> canPatientDischarge =
-            patient -> {
-                List<NucleicAcidTest> tests = patient.getNucleicAcidTests();
-                List<InfoRegistration> registrations = patient.getInfoRegistrations();
-                if (tests == null || registrations == null) {
-                    return false;
-                }
-                return TEST_CHECK_LIMIT ==
-                        tests.stream().sorted(Comparator.comparing(NucleicAcidTest::getDate).reversed()).limit(TEST_CHECK_LIMIT).
-                                filter(test -> test.getResult() == NEGATIVE).count() &&
+    private static boolean canPatientDischargeFunction(Patient patient,
+                                                       NucleicAcidTestRepository nucleicAcidTestRepository,
+                                                       InfoRegistrationRepository infoRegistrationRepository) {
+        final int patientId = patient.getId();
+
+        return
+                TEST_CHECK_LIMIT ==
+                        nucleicAcidTestRepository.
+                                countByPatientOrderByDateTop(patientId, TEST_CHECK_LIMIT, NEGATIVE)
+                        &&
                         REGISTER_CHECK_LIMIT ==
-                                registrations.stream().sorted(Comparator.comparing(InfoRegistration::getDate).reversed()).limit(REGISTER_CHECK_LIMIT).
-                                        filter(registration -> registration.getTemperature() <= TEMPERATURE_BORDER).count();
-
-            };
-
+                                infoRegistrationRepository.
+                                        countByPatientOrderByDateTop(patientId, REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
+    }
 
 }
 
