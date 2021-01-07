@@ -26,13 +26,15 @@ import javax.persistence.criteria.Predicate;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static fd.se.dbconcepts_project.entity.consts.Constants.*;
 import static fd.se.dbconcepts_project.entity.consts.Profession.DOCTOR;
 import static fd.se.dbconcepts_project.entity.consts.Profession.HEAD_NURSE;
-import static fd.se.dbconcepts_project.entity.consts.Result.POSITIVE;
+import static fd.se.dbconcepts_project.entity.consts.Result.NEGATIVE;
 import static fd.se.dbconcepts_project.entity.consts.State.*;
 
 @Service
@@ -73,9 +75,8 @@ public class PatientService {
 
 
     public List<Patient> getPatientsCanDischarge(Region region) {
-        return patientRepository.findPatientsByTestsAndRegistrations(region,
-                TEST_CHECK_LIMIT, POSITIVE,
-                REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
+        return patientRepository.findByRegion(region).stream().
+                filter(canPatientDischarge).collect(Collectors.toList());
     }
 
     public List<Patient> getPatientsRegionNotMatchCondition(Region region) {
@@ -89,9 +90,8 @@ public class PatientService {
     }
 
     public List<Patient> getWardNursePatientsCanDischarge(int wardNurseId) {
-        return patientRepository.findWardNursePatientByTestsAndRegistrations(wardNurseId,
-                TEST_CHECK_LIMIT, POSITIVE,
-                REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
+        return patientRepository.findByWardNurseId(wardNurseId).stream().
+                filter(canPatientDischarge).collect(Collectors.toList());
     }
 
     public NucleicAcidTest getTestForPatientByDate(int patientId, LocalDate date) {
@@ -211,10 +211,7 @@ public class PatientService {
     }
 
     private void tryNotifyDischarge(Patient patient) {
-        patient = patientRepository.testPatientByTestsAndRegistrations(patient.getId(),
-                TEST_CHECK_LIMIT, POSITIVE,
-                REGISTER_CHECK_LIMIT, TEMPERATURE_BORDER);
-        if (patient != null) {
+        if (canPatientDischarge.test(patient)) {
             messageService.createMessage(MessageType.TRANSFERRED_NOTIFY,
                     getUserOf(patient.getRegion(), DOCTOR).getMedic(),
                     patient, patient.getRegion());
@@ -257,6 +254,24 @@ public class PatientService {
 
         return registration;
     }
+
+
+    private static final java.util.function.Predicate<Patient> canPatientDischarge =
+            patient -> {
+                List<NucleicAcidTest> tests = patient.getNucleicAcidTests();
+                List<InfoRegistration> registrations = patient.getInfoRegistrations();
+                if (tests == null || registrations == null) {
+                    return false;
+                }
+                return TEST_CHECK_LIMIT ==
+                        tests.stream().sorted(Comparator.comparing(NucleicAcidTest::getDate).reversed()).limit(TEST_CHECK_LIMIT).
+                                filter(test -> test.getResult() == NEGATIVE).count() &&
+                        REGISTER_CHECK_LIMIT ==
+                                registrations.stream().sorted(Comparator.comparing(InfoRegistration::getDate).reversed()).limit(REGISTER_CHECK_LIMIT).
+                                        filter(registration -> registration.getTemperature() <= TEMPERATURE_BORDER).count();
+
+            };
+
 
 }
 
