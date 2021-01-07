@@ -15,6 +15,7 @@ import fd.se.dbconcepts_project.service.PatientService;
 import fd.se.dbconcepts_project.service.ProfessionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,7 +77,8 @@ public class WardNurseController {
     @Authorize(role = USER, professions = {WARD_NURSE})
     @GetMapping("/patient/test")
     public ResponseEntity<?> checkNucleicAcidTest(@RequestParam int id,
-                                                  @RequestParam LocalDate date) {
+                                                  @RequestParam
+                                                  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         final User currUser = subject.getUser();
         final NucleicAcidTest test = patientService.getTestForPatientByDate(id, date);
         if (test != null) {

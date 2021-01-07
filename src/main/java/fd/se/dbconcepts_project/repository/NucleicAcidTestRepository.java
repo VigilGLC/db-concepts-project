@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Repository
 public interface NucleicAcidTestRepository extends CrudRepository<NucleicAcidTest, Integer> {
 
-    public NucleicAcidTest findByPatientIdAndDate(int id, LocalDate date);
+    public NucleicAcidTest findTop1ByPatientIdAndDate(int id, LocalDate date);
 
 
     @Query(nativeQuery = true,

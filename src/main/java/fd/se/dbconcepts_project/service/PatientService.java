@@ -94,7 +94,7 @@ public class PatientService {
     }
 
     public NucleicAcidTest getTestForPatientByDate(int patientId, LocalDate date) {
-        return testRepository.findByPatientIdAndDate(patientId, date);
+        return testRepository.findTop1ByPatientIdAndDate(patientId, date);
     }
 
 
