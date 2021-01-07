@@ -11,6 +11,7 @@ import fd.se.dbconcepts_project.entity.medic.WardNurse;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -38,8 +39,8 @@ public class Patient {
     private WardBed wardBed;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<NucleicAcidTest> nucleicAcidTests;
+    private List<NucleicAcidTest> nucleicAcidTests = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL)
-    private List<InfoRegistration> infoRegistrations;
+    private List<InfoRegistration> infoRegistrations = new ArrayList<>();
 
 }

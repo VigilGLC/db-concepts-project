@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,7 +38,15 @@ public class MessageService {
     public void createMessage(MessageType type, MedicBase receiver, Patient patient, Region region) {
         Message message = new Message();
         message.setReceiver(receiver);
-        message.setContent(MessageFormat.format(type.format, patient.getId(), region));
+
+        String content = "";
+        if (type == MessageType.DISCHARGEABLE_NOTIFY) {
+            content = "Message: Patient " + patient.getId() + " int Region " + region + " Dischargeable. ";
+        } else if (type == MessageType.TRANSFERRED_NOTIFY) {
+            content = "Message: Patient " + patient.getId() + " already Transferred to Region " + region + ". ";
+        }
+        message.setContent(content);
+
         message.setTime(LocalDateTime.now());
         message = messageRepository.save(message);
         log.info("Message {} send to User {}", message.getId(), receiver.getUser().getUsername());
