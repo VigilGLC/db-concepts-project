@@ -16,6 +16,7 @@ import java.util.List;
 public class WardService {
 
     private final WardRepository wardRepository;
+    private final PatientService patientService;
 
     @Transactional
     public List<Ward> getAllWards() {
@@ -38,13 +39,15 @@ public class WardService {
     @Transactional
     public Ward addWardBed(int wardId) {
         final WardBed wardBed = new WardBed();
-        final Ward ward = wardRepository.findById(wardId);
+        Ward ward = wardRepository.findById(wardId);
         if (ward.getWardBeds().size() >= ward.getRegion().wardBedsMax) {
             return null;
         }
         ward.getWardBeds().add(wardBed);
         wardBed.setWard(ward);
-        return wardRepository.save(ward);
+        ward = wardRepository.save(ward);
+        patientService.rearrangePatients(ward.getRegion());
+        return ward;
     }
 
     @Transactional
