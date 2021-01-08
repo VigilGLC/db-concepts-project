@@ -49,7 +49,7 @@ public class EmergencyNurseController {
     }
 
     @Authorize(role = USER, professions = {EMERGENCY_NURSE})
-    @GetMapping("/patients")
+    @PostMapping("/patients")
     public ResponseEntity<?> getPatients(@RequestBody PatientFilterRequest request) {
         final Region region = request.getRegion();
         final Condition condition = request.getCondition();

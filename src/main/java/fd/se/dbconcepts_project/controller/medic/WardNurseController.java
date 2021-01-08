@@ -37,7 +37,7 @@ public class WardNurseController {
 
 
     @Authorize(role = USER, professions = {WARD_NURSE})
-    @GetMapping("/patients/condition")
+    @PostMapping("/patients/condition")
     public ResponseEntity<?> getAllPatients(@RequestBody PatientFilterRequest request) {
         final Condition condition = request.getCondition();
         final User currUser = subject.getUser();

@@ -74,7 +74,7 @@ public class MedicController {
     }
 
     @Authorize(role = USER, professions = {DOCTOR, HEAD_NURSE})
-    @GetMapping("/patients")
+    @PostMapping("/patients")
     public ResponseEntity<?> getPatients(@RequestBody PatientFilterRequest request) {
         final State state = request.getState();
         final User currUser = subject.getUser();
