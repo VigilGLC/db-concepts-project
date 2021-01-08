@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static fd.se.dbconcepts_project.entity.consts.Role.ANY;
 import static fd.se.dbconcepts_project.entity.consts.Role.USER;
 
 @RestController
@@ -32,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok(currUser.getMedic());
     }
 
-    @Authorize(role = USER)
+    @Authorize(role = ANY)
     @GetMapping(value = "/profile")
     public ResponseEntity<?> getProfile() {
         final User currUser = subject.getUser();
@@ -40,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok(currUser);
     }
 
-    @Authorize(role = USER)
+    @Authorize(role = ANY)
     @PostMapping(value = "/profile/change")
     public ResponseEntity<?> changeProfile(@RequestBody ProfileChangeRequest request) {
         final User currUser = subject.getUser();
