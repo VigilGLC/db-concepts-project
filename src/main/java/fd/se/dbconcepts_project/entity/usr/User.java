@@ -29,7 +29,6 @@ public class User {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
-    @JsonIgnore
     private Role role;
 
     @OneToOne(cascade = CascadeType.ALL)
