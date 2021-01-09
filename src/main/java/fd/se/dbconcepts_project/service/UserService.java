@@ -34,6 +34,7 @@ public class UserService {
     public User createUser(SignUpRequest request) {
         final User user = new User();
         user.setUsername(request.getUsername());
+        user.setName(request.getName());
         user.setPassword(encryptUtils.encrypt(request.getPassword()));
         user.setGender(request.getGender());
         user.setRole(Role.USER);
