@@ -21,6 +21,8 @@ public class Message {
     private String content;
     private LocalDateTime time;
 
+    private int patientId;
+
     @ManyToOne
     private MedicBase receiver;
 }

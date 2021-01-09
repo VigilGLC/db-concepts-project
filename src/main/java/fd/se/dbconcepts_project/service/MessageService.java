@@ -38,6 +38,7 @@ public class MessageService {
     public void createMessage(MessageType type, MedicBase receiver, Patient patient, Region region) {
         Message message = new Message();
         message.setReceiver(receiver);
+        message.setPatientId(patient.getId());
 
         String content = "";
         if (type == MessageType.DISCHARGEABLE_NOTIFY) {
