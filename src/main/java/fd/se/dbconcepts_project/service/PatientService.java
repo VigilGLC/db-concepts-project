@@ -54,7 +54,11 @@ public class PatientService {
     public List<Patient> getAllPatientsBy(Region region, Condition condition, State state) {
         final Specification<Patient> spec = (root, query, builder) -> {
             List<Predicate> preds = new ArrayList<>(4);
-            preds.add(builder.equal(root.get("region"), region));
+            if (region != null) {
+                preds.add(builder.equal(root.get("region"), region));
+            } else {
+                preds.add(root.get("region").isNull());
+            }
             if (condition != null) {
                 preds.add(builder.equal(root.get("condition"), condition));
             }
